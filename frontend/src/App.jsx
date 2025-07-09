@@ -26,6 +26,60 @@ import PrivateRoute from "./components/Private_route";
 function App() {
   useAutoLogout();
 
+  // Protected pages with pageId mapping
+  const protectedPages = [
+    {
+      path: "/pages/products-list",
+      component: Products,
+      pageId: 1,
+      name: "Products",
+    },
+    {
+      path: "/pages/marketing-list",
+      component: Marketing,
+      pageId: 2,
+      name: "Marketing",
+    },
+    { path: "/pages/order-list", component: Order, pageId: 3, name: "Order" },
+    {
+      path: "/pages/media-plans",
+      component: Media,
+      pageId: 4,
+      name: "Media Plans",
+    },
+    {
+      path: "/pages/offer-pricing-skus",
+      component: OfferPricing,
+      pageId: 5,
+      name: "Offer Pricing SKUs",
+    },
+    { path: "/pages/clients", component: Clients, pageId: 6, name: "Clients" },
+    {
+      path: "/pages/suppliers",
+      component: Suppliers,
+      pageId: 7,
+      name: "Suppliers",
+    },
+    {
+      path: "/pages/customer-support",
+      component: CustomerSupport,
+      pageId: 8,
+      name: "Customer Support",
+    },
+    {
+      path: "/pages/sales-reports",
+      component: SalesReports,
+      pageId: 9,
+      name: "Sales Reports",
+    },
+    {
+      path: "/pages/finance-accounting",
+      component: FinanceAndAccounting,
+      pageId: 10,
+      name: "Finance & Accounting",
+    },
+  ];
+
   return (
     <Router>
       <AuthProvider>
@@ -34,7 +88,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/verify" element={<VerifyEmail />} />
 
-          {/* Protected Routes */}
+          {/* Protected Dashboard Route */}
           <Route
             path="/"
             element={
@@ -70,89 +124,22 @@ function App() {
             }
           />
 
-          {/* Pages with Specific Permissions */}
-          <Route
-            path="/pages/products-list"
-            element={
-              <PrivateRoute pageId={1}>
-                <Products />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/pages/marketing-list"
-            element={
-              <PrivateRoute pageId={2}>
-                <Marketing />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/pages/order-list"
-            element={
-              <PrivateRoute pageId={3}>
-                <Order />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/pages/media-plans"
-            element={
-              <PrivateRoute pageId={4}>
-                <Media />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/pages/offer-pricing-skus"
-            element={
-              <PrivateRoute pageId={5}>
-                <OfferPricing />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/pages/clients"
-            element={
-              <PrivateRoute pageId={6}>
-                <Clients />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/pages/suppliers"
-            element={
-              <PrivateRoute pageId={7}>
-                <Suppliers />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/pages/customer-support"
-            element={
-              <PrivateRoute pageId={8}>
-                <CustomerSupport />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/pages/sales-reports"
-            element={
-              <PrivateRoute pageId={9}>
-                <SalesReports />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/pages/finance-accounting"
-            element={
-              <PrivateRoute pageId={10}>
-                <FinanceAndAccounting />
-              </PrivateRoute>
-            }
-          />
+          {/* Protected Pages (Mapped) */}
+          {protectedPages.map(
+            ({ path, component: Component, pageId, name }) => (
+              <Route
+                key={path}
+                path={path}
+                element={
+                  <PrivateRoute pageId={pageId} pageName={name}>
+                    <Component pageId={pageId} pageName={name} />
+                  </PrivateRoute>
+                }
+              />
+            )
+          )}
 
-          {/* 404 Route (Always Last) */}
+          {/* 404 Route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>

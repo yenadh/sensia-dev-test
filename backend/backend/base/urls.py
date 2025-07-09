@@ -15,6 +15,7 @@ from .views import (
     list_all_access, 
     send_verification_email, 
     verify_otp, reset_password,
+    get_user_page_permission_by_id,
     create_comment, edit_comment, delete_comment, list_comments) 
 
 urlpatterns = [
@@ -33,7 +34,8 @@ urlpatterns = [
     path('users/<int:user_id>/delete/', soft_delete_user, name='soft_delete_user'),
 
     path('pages/', pages, name='pages'),
-    path('user-page-permission/', get_user_page_permission, name='user-page-permission'),
+    path('user-page-permission/', get_user_page_permission, name='user-page-permission'),  # POST view
+    path('user-page-permission/by-user/', get_user_page_permission_by_id, name='user_page_permission_by_id'),  # GET view
     path('access/', assign_page_permission, name='assign-page-access'),
     path('access/all/', list_all_access, name='list-all-access'),
 

@@ -2,14 +2,16 @@ import { Box, VStack, Flex, Link, Text } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import CustomInput from "@/components/ui/customComponents/CustomInput";
 import CustomButton from "@/components/ui/customComponents/CustomButton";
-import { useState } from "react";
-import { login } from "@/endpoints/api";
-import { useNavigate } from "react-router-dom";
 import EmailComponent from "@/components/ui/customComponents/EmailComponent";
+import { login } from "@/endpoints/api";
 
-const schema = Yup.object().shape({
+// Validation schema
+const schema = Yup.object({
   username: Yup.string().required("Username is required"),
   password: Yup.string()
     .min(4, "Password must be at least 4 characters")
@@ -17,9 +19,9 @@ const schema = Yup.object().shape({
 });
 
 export default function Login() {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [emailComponentOpen, setEmailComponentOpen] = useState(false);
-  const navigate = useNavigate();
 
   const {
     register,
@@ -32,35 +34,26 @@ export default function Login() {
 
   const onSubmit = async (data) => {
     setIsLoading(true);
-
     try {
       const res = await login(data.username, data.password);
       if (res.success) {
-        navigate("/");
         localStorage.setItem("userID", res.user.id);
+        navigate("/");
       } else {
-        setError("username", {
-          type: "manual",
-          message: "Invalid username or password",
-        });
-        setError("password", {
-          type: "manual",
-          message: "Invalid username or password",
-        });
+        handleAuthError();
       }
     } catch (error) {
       console.error(error);
-      setError("username", {
-        type: "manual",
-        message: "Invalid username or password",
-      });
-      setError("password", {
-        type: "manual",
-        message: "Invalid username or password",
-      });
+      handleAuthError();
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleAuthError = () => {
+    const errorMsg = "Invalid username or password";
+    setError("username", { type: "manual", message: errorMsg });
+    setError("password", { type: "manual", message: errorMsg });
   };
 
   return (
@@ -69,12 +62,13 @@ export default function Login() {
         isOpen={emailComponentOpen}
         setIsOpen={setEmailComponentOpen}
       />
+
       <Box
-        background="white"
+        bg="white"
         shadow="md"
         borderRadius="lg"
         p={8}
-        width={{ base: "90%", sm: "80%", md: "400px" }}
+        w={{ base: "90%", sm: "80%", md: "400px" }}
       >
         <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
           <VStack spacing={4}>

@@ -403,6 +403,51 @@ def get_user_page_permission(request):
     except UserPageAccess.DoesNotExist:
         return Response({'detail': 'Permission record not found.', 'status': 'non'}, status=200)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_page_permission_by_id(request):
+    page_id = request.query_params.get('page')
+
+    if not page_id:
+        return Response({'detail': 'Page parameter is required.'}, status=400)
+
+    try:
+        page = Page.objects.get(id=page_id)
+    except Page.DoesNotExist:
+        return Response({'detail': 'Page not found.', 'status': 'non'}, status=404)
+
+    user = request.user  # Authenticated user
+
+    if user.is_staff:
+        # Admin users get full permissions
+        return Response({
+            'status': 'true',
+            'data': {
+                'can_create': True,
+                'can_edit': True,
+                'can_delete': True,
+                'can_comment': True
+            },
+            'is_staff': user.is_staff
+        }, status=200)
+
+    # Non-admin users: Check their specific permission
+    try:
+        access = UserPageAccess.objects.get(user=user, page=page)
+        serializer = UserPageAccessSerializer(access)
+        return Response({
+            'status': 'true',
+            'data': serializer.data,
+            'is_staff': user.is_staff
+        }, status=200)
+    except UserPageAccess.DoesNotExist:
+        return Response({
+            'detail': 'Permission record not found.',
+            'status': 'non',
+            'is_staff': user.is_staff
+        }, status=404)
+
+
 
 
 @api_view(['POST', 'PUT'])

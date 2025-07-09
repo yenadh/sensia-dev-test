@@ -86,6 +86,14 @@ export const getUserAccess = async (userId, pageId) => {
   return response.data;
 };
 
+export const getUserAccessByPage = async (pageId) => {
+  const response = await api.get(
+    `user-page-permission/by-user/?page=${pageId}`,
+    {}
+  );
+  return response.data;
+};
+
 export const assignUserAccess = async (userId, pageId, permissions) => {
   const response = await api.post("access/", {
     user: userId,
