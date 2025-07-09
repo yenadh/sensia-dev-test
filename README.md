@@ -98,7 +98,6 @@ backend/
 
 ---
 
----
 
 ## ⚠️ Known issues
 * After successfull login use may not redirect to their dashboard in that case user need to change the route manualy to "/" (This will fix ASAP) 
@@ -128,6 +127,12 @@ cd ../frontend
 npm install
 npm run dev
 ```
+
+## 🎥 Demo Video
+https://drive.google.com/drive/folders/1l7BpRdW_nWMOhQ5j-y6nmjNcyymtBolS?usp=sharing
+
+
+---
 ---
 ## Author
 Keshawa Sri Yenadh Weerasooriya  
