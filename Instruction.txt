@@ -1,0 +1,8 @@
+.\venv\Scripts\Activate - to Activate virtual environment
+django-admin startproject backend - create project
+
+** "cd backend" and enter **
+python manage.py startapp "app-name" - create django app
+
+python manage.py migrate - make migrations
+python manage.py createsuperuser - create super admin
